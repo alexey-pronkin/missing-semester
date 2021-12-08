@@ -1,10 +1,29 @@
-name: "Example"
-description: "Receives file and generates output"
+name: "File and artifacts"
+description: "Creates file and save it, if file is already created, reads it "
 inputs:
   file-path: # id of input
-    description: "Path to test script"
-    required: true
-    default: "test-file.js"
+    description: "Path to save file"
+    required: false
+    default: "workflow/scripts/create_output.sh" 
 outputs:
   results-file: # id of output
     description: "Path to results file"
+    default: workflow/results/output.log
+jobs:
+  create-artifact-job:
+    name: Save output
+    steps:
+      - shell: bash
+        run: |
+          expr 1 + 1 > output.log
+      - name: Upload output file
+        uses: actions/upload-artifact@v2
+        with:
+          name: output-log-file
+          path: output.log
+    download-artifact-job:
+      steps:
+        - name: Download a single artifact
+          uses: actions/download-artifact@v2
+          with:
+            name: output-log-file
