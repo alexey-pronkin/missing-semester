@@ -1,0 +1,6 @@
+image: mathinaction/lesson2:v0.2
+port: 8080
+replicas: 3
+secret:
+  name: load-secret
+  password: IknowThatYouKnowThis
