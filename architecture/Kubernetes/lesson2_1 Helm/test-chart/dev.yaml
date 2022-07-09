@@ -1,4 +1,0 @@
-replicas: 1
-secret:
-  name: dev-secret
-  password: DevIKnowThatYouKnowIt

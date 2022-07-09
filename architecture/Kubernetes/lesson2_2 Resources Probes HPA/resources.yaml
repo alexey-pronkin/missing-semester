@@ -1,0 +1,10 @@
+containers:
+- name: app
+  image: mathinaction/lesson2:v0.2
+  resources:
+    requests:
+      memory: "100Mi"
+      cpu: "200m"
+    limits:
+      memory: "150Mi"
+      cpu: "300m"
