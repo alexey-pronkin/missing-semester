@@ -123,3 +123,54 @@ WHERE action='deliver_order' AND DATE_PART('year', time)='2022' AND DATE_PART('m
 GROUP BY courier_id
 ORDER BY delivered_orders DESC
 LIMIT 3
+
+-- Задание:
+
+-- А теперь отберите id только тех курьеров, которые в сентябре 2022 года успели доставить только по одному заказу. 
+-- Таблица та же — courier_actions. Вновь выведите две колонки — id курьера и число доставленных заказов. 
+-- Колонку с числом заказов назовите delivered_orders. Результат отсортируйте по возрастанию id курьера.
+
+-- Поля в результирующей таблице: courier_id, delivered_orders
+
+SELECT courier_id, COUNT(action) as delivered_orders
+FROM courier_actions
+WHERE (DATE_PART('year', time)='2022') AND (DATE_PART('month', time)='9') AND (action='deliver_order')
+GROUP BY courier_id
+HAVING COUNT(action)=1
+ORDER BY courier_id ASC
+
+-- Ой, к нам в кабинет снова постучались! 
+-- Это опять маркетологи: говорят, что хотят разослать пуш-уведомление со специальным предложением.
+-- Аудитория — пользователи, которые давно не делали у нас заказ.
+
+-- Задание:
+
+-- Из таблицы user_actions отберите пользователей, у которых последний заказ был создан до 8 сентября 2022 года.
+-- Выведите только их id, дату создания заказа выводить не нужно.
+-- Результат отсортируйте по возрастанию id пользователя.
+
+-- Поле в результирующей таблице: user_id
+
+SELECT user_id
+FROM user_actions
+WHERE action='create_order'
+GROUP BY user_id
+HAVING max(time) < make_date(2022, 9, 8)
+ORDER BY user_id ASC
+
+-- Задание:
+
+-- Для каждого пользователя в таблице user_actions посчитайте долю отменённых заказов. 
+-- Выведите две колонки: id пользователя и рассчитанный показатель. 
+-- Новую колонку с показателем округлите до двух знаков после запятой и назовите cancel_rate. 
+-- Результат отсортируйте по возрастанию id пользователя.
+-- Пояснение:
+-- Чтобы посчитать долю отменённых заказов, необходимо поделить количество отменённых заказов на общее число уникальных заказов пользователя. 
+-- Помните, что для получения корректного результата деления нужно хотя бы одно из значений привести к типу DECIMAL.
+
+-- Поля в результирующей таблице: user_id, cancel_rate
+
+SELECT user_id, ROUND(COUNT(action) FILTER(WHERE action='cancel_order') / (COUNT(DISTINCT order_id)::DECIMAL), 2) as cancel_rate
+FROM user_actions
+GROUP BY user_id
+ORDER BY user_id ASC

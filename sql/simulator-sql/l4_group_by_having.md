@@ -138,3 +138,19 @@ FROM table
 GROUP BY column_1
 HAVING SUM(column_2) = 10
 ```
+
+А теперь попробуем решить задачу посложнее. Для неё нам снова пригодится агрегатное выражение с фильтрацией, которое мы рассматривали на прошлом уроке. Эту конструкцию можно применять не только ко всей таблице, но и отдельно к каждой группе, сформированной в результате применения оператора GROUP BY. В общем виде она будет выглядеть так:
+
+```sql
+SELECT column_1, agg_function(column_2) FILTER (WHERE [condition])
+FROM table
+GROUP BY column_1
+```
+
+Пример:
+
+```sql
+SELECT column_1, AVG(column_2) FILTER (WHERE column_3 > 100)
+FROM table
+GROUP BY column_1
+```
