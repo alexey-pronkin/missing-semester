@@ -207,6 +207,9 @@ GROUP BY
   group_age
 ORDER BY
   group_age ASC
+
+-- Alternative solution
+
 SELECT
   CASE
     WHEN DATE_PART('year', AGE(birth_date)) BETWEEN 19
