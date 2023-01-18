@@ -100,3 +100,54 @@ WHERE
 SELECT COUNT(DISTINCT user_id) as users_count
 FROM user_actions
 WHERE time > (SELECT MAX(time) FROM user_actions ) - INTERVAL '1 week'
+
+-- Задание:
+
+-- С помощью функции AGE() и агрегирующей функции снова рассчитайте возраст самого молодого курьера мужского пола в таблице couriers,
+-- но в этот раз в качестве первой даты используйте последнюю дату из таблицы courier_actions.
+-- Чтобы получилась именно дата, перед применением функции AGE() переведите посчитанную последнюю дату в формат DATE, как мы делали в этом задании.
+-- Возраст курьера измерьте количеством лет, месяцев и дней и переведите его в тип VARCHAR. Полученную колонку со значением возраста назовите min_age.
+
+-- Поле в результирующей таблице: min_age
+
+SELECT
+  AGE(
+    (
+      SELECT
+        MAX (time)
+      FROM
+        courier_actions
+    ) :: DATE,
+    MAX(birth_date)
+  ) :: VARCHAR as min_age
+FROM
+  couriers
+WHERE
+  sex = 'male'
+
+-- Задание:
+
+-- Из таблицы user_actions с помощью подзапроса или табличного выражения отберите все заказы, которые не были отменены пользователями.
+-- Выведите колонку с id этих заказов.
+-- Результат запроса отсортируйте по возрастанию id заказа.
+-- Добавьте LIMIT 1000.
+
+-- Поле в результирующей таблице: order_id
+
+SELECT
+  order_id
+FROM
+  user_actions
+WHERE
+  order_id NOT IN (
+    SELECT
+      order_id
+    FROM
+      user_actions
+    WHERE
+      action = 'cancel_order'
+  )
+ORDER BY
+  order_id
+LIMIT
+  1000
