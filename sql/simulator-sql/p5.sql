@@ -36,7 +36,6 @@ FROM
 
 -- Поле в результирующей таблице: orders_avg
 
-Поле в результирующей таблице: orders_avg
 WITH c_orders AS (SELECT
       COUNT(DISTINCT order_id) as number_orders,
       user_id
@@ -47,4 +46,57 @@ WITH c_orders AS (SELECT
 SELECT
   ROUND(AVG(number_orders), 2) as orders_avg
 FROM c_orders
-    
+
+-- Задание:
+-- Выведите из таблицы products информацию о всех товарах кроме самого дешёвого.
+-- Результат отсортируйте по убыванию id товара.
+-- Поля в результирующей таблице: product_id, name, price
+
+SELECT
+  product_id,
+  name,
+  price
+FROM
+  products
+WHERE
+  price !=(
+    SELECT
+      MIN(price)
+    FROM
+      products
+  )
+  ORDER BY product_id DESC
+
+-- Задание:
+
+-- Выведите информацию о товарах в таблице products, цена на которые превышает среднюю цену всех товаров на 20 рублей и более. 
+-- Результат отсортируйте по убыванию id товара.
+
+-- Поля в результирующей таблице: product_id, name, price
+
+SELECT
+  product_id,
+  name,
+  price
+FROM
+  products
+WHERE
+  price > (
+    SELECT
+      AVG(price)
+    FROM
+      products
+  ) + 20
+  ORDER BY product_id DESC
+
+-- Задание:
+
+-- Посчитайте количество уникальных клиентов в таблице user_actions, сделавших за последнюю неделю хотя бы один заказ. 
+-- Полученную колонку со значением назовите users_count. 
+-- В качестве текущей даты, от которой откладывать неделю, используйте последнюю дату в той же таблице user_actions.
+
+-- Поле в результирующей таблице: users_count
+
+SELECT COUNT(DISTINCT user_id) as users_count
+FROM user_actions
+WHERE time > (SELECT MAX(time) FROM user_actions ) - INTERVAL '1 week'
