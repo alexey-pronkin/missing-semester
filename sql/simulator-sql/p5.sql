@@ -151,3 +151,37 @@ ORDER BY
   order_id
 LIMIT
   1000
+
+-- Задание:
+
+-- Используя данные из таблицы user_actions, рассчитайте, сколько заказов сделал каждый пользователь и отразите это в столбце orders_count. 
+-- В отдельном столбце orders_avg напротив каждого пользователя укажите среднее число заказов всех пользователей, округлив его до двух знаков после запятой. 
+-- Также для каждого пользователя посчитайте отклонение числа заказов от среднего значения. 
+-- Отклонение считайте так: число заказов «минус» округлённое среднее значение. 
+-- Колонку с отклонением назовите orders_diff. Результат отсортируйте по возрастанию id пользователя. Добавьте LIMIT 1000.
+
+-- Пояснение:
+
+-- В этой задаче можно использовать подзапрос, написанный в первых заданиях этого урока. Чтобы не пришлось дважды писать один и тот же подзапрос, можно использовать оператор WITH.
+
+-- Поля в результирующей таблице: user_id, orders_count, orders_avg, orders_diff
+
+WITH orders_count_table AS (SELECT user_id, COUNT(DISTINCT order_id) as orders_count
+FROM user_actions
+GROUP BY user_id)
+-- SELECT user_id , (SELECT ROUND(AVG(orders_count), 2) as orders_avg, (orders_count-ROUND(AVG(orders_count), 2)) as orders_diff FROM orders_count_table)
+-- FROM  user_actions
+-- ORDER BY user_id
+-- LIMIT 1000
+
+
+-- WITH c_orders AS (SELECT
+--       COUNT(DISTINCT order_id) as number_orders,
+--       user_id
+--     FROM
+--       user_actions
+--     GROUP BY
+--       user_id)
+-- SELECT
+--   ROUND(AVG(number_orders), 2) as orders_avg
+-- FROM c_orders
